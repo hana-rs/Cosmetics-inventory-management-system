@@ -1,0 +1,12 @@
+{
+    "name": "cosmetic-store",
+    "type": "module",
+    "dependencies": {
+      "@hono/node-server": "^1.11.1",
+      "hono": "^4.3.6"
+    },
+    "scripts": {
+      "start": "node server.js"
+    }
+  }
+  
