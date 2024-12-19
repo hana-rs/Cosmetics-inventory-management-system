@@ -137,6 +137,8 @@ app.get("/middle_categories", async (c) => {
   }
 });
 
+
+
 // サーバー起動
 serve({
   fetch: app.fetch,

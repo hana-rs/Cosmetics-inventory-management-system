@@ -6,7 +6,16 @@ const CosmeticApp = () => {
   const [items, setItems] = useState([]); // アイテムデータ
   const [selectedCategory, setSelectedCategory] = useState(""); // 選択されたカテゴリ
   const [selectedMiddleCategory, setSelectedMiddleCategory] = useState(""); // 選択されたアイテム
+  const [status, setStatus] = useState('unopened'); // デフォルトは未開封
+  const [openDate, setOpenDate] = useState('');
 
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+  };
+
+  const handleDateChange = (e) => {
+    setOpenDate(e.target.value);
+  };
 
   useEffect(() => {
     // 初回レンダリング時にカテゴリデータを取得
@@ -48,6 +57,7 @@ const CosmeticApp = () => {
     setSelectedMiddleCategory(e.target.value); // 選択されたアイテムを更新
   };
 
+
   
 
   return (
@@ -81,6 +91,57 @@ const CosmeticApp = () => {
         <label>アイテム名：</label>
         <input type="text" />
       </div>
+      <div>
+        <label>色番号：</label>
+        <input type="text" />
+      </div>
+      <div>
+        <label>在庫数：</label>
+        <input type="number" min="1" step="1" />
+      </div>
+      <div>
+      <label>開封日：</label>
+      <div>
+        {/* ラジオボタン */}
+        <label>
+          <input
+            type="radio"
+            value="unopened"
+            checked={status === 'unopened'}
+            onChange={handleStatusChange}
+          />
+          未開封
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="opened"
+            checked={status === 'opened'}
+            onChange={handleStatusChange}
+          />
+          開封済
+        </label>
+      </div>
+
+        <div>
+          <label>
+            開封した日：
+            <input
+              type="date"
+              value={openDate}
+              onChange={handleDateChange}
+              disabled={status === 'unopened'}
+            />
+          </label>
+        </div>
+    </div>
+      <button
+        onClick={() => {
+          alert("登録しました");
+        }}
+      >
+        登録
+      </button>
     </div>
   );
 };
