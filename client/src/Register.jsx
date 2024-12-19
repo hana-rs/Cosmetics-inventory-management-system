@@ -5,7 +5,7 @@ const CosmeticApp = () => {
   const [categories, setCategories] = useState([]); // カテゴリデータ
   const [items, setItems] = useState([]); // アイテムデータ
   const [selectedCategory, setSelectedCategory] = useState(""); // 選択されたカテゴリ
-  const [selectedItem, setSelectedItem] = useState(""); // 選択されたアイテム
+  const [selectedMiddleCategory, setSelectedMiddleCategory] = useState(""); // 選択されたアイテム
 
 
   useEffect(() => {
@@ -20,11 +20,11 @@ const CosmeticApp = () => {
       const response = await fetch("http://localhost:8000/categories")
       const data = await response.json();
       setCategories(data)
-      fetchItems(data.big_id)
+      fetchMiddleCategories(data.big_id)
   };
 
   // アイテムデータを取得する関数
-  const fetchItems = async (categoryId) => {
+  const fetchMiddleCategories = async (categoryId) => {
     try {
       const response = await fetch(`http://localhost:8000/middle_categories?big_id=${categoryId}`);
       const data = await response.json();
@@ -35,21 +35,20 @@ const CosmeticApp = () => {
     }
   };
 
-  
-
   const handleCategoryChange = (e) => {// カテゴリが変更されたときの処理
     const selected = e.target.value;
     setSelectedCategory(selected);
-    setSelectedItem(""); // アイテムをリセット
+    setSelectedMiddleCategory(""); // アイテムをリセット
     if (selected) {
-      // カテゴリに基づいてアイテムを取得
-      fetchItems(selected);
+      fetchMiddleCategories(selected); // 選択されたカテゴリに対応するアイテムを取得
     }
   };
 
-  const handleItemChange = (e) => {
-    setSelectedItem(e.target.value); // 選択されたアイテムを更新
+  const handleMiddleCategoryChange = (e) => {
+    setSelectedMiddleCategory(e.target.value); // 選択されたアイテムを更新
   };
+
+  
 
   return (
     <div>
@@ -69,7 +68,7 @@ const CosmeticApp = () => {
       </div>
       <div>
         <label>中分類：</label>
-        <select value={selectedItem} onChange={handleItemChange} disabled={!selectedCategory}>
+        <select value={selectedMiddleCategory} onChange={handleMiddleCategoryChange} disabled={!selectedCategory}>
           <option value="">選択してください</option>
           {items.map((item) => (
             <option>
@@ -77,6 +76,10 @@ const CosmeticApp = () => {
             </option>
           ))}
         </select>
+      </div>
+      <div>
+        <label>アイテム名：</label>
+        <input type="text" />
       </div>
     </div>
   );
