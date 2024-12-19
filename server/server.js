@@ -1,7 +1,6 @@
 import Database from 'better-sqlite3';
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { HTTPException } from 'hono/http-exception';
 import { cors } from "hono/cors";
 
 const app = new Hono();
@@ -10,129 +9,135 @@ const db = new Database('cosme.db');
 // CORSの設定
 app.use(cors({ origin: "*" }));
 
-const big_id = [
-    { big_id: 1, content: "ベースメイク" },
-    { big_id: 2, content: "アイメイク" },
-    { big_id: 3, content: "眉メイク" },
-    { big_id: 4, content: "まつ毛メイク" },
-    { big_id: 5, content: "チーク" },
-    { big_id: 6, content: "シャドウ" },
-    { big_id: 7, content: "ハイライト" },
-    { big_id: 8, content: "リップメイク" },
-    { big_id: 9, content: "スキンケア" },
-    { big_id: 10, content: "メイク落とし" },
-    { big_id: 11, content: "その他" },
-  ];
+// categories テーブルを作成
+const createTable = db.prepare(`
+  CREATE TABLE IF NOT EXISTS categories (
+      big_id INTEGER PRIMARY KEY,
+      content TEXT NOT NULL
+  );
+`);
+createTable.run();
+
+// middle_cattegories テーブルを作成
+const createMiddleCategoriesTable = db.prepare(`
+  CREATE TABLE IF NOT EXISTS middle_categories (
+      middle_id INTEGER PRIMARY KEY,
+      big_id INTEGER,
+      content TEXT NOT NULL
+  );
+`);
+createMiddleCategoriesTable.run();
+
+// categories を取得するクエリ
+const getCategoriesQuery = db.prepare(`
+  SELECT * FROM categories;
+`);
+
+// データの挿入
+const insertCategories = db.prepare(`
+  INSERT OR IGNORE INTO categories (big_id, content) VALUES
+  (1, 'ベースメイク'),
+  (2, 'アイメイク'),
+  (3, '眉メイク'),
+  (4, 'まつ毛メイク'),
+  (5, 'チーク'),
+  (6, 'シャドウ'),
+  (7, 'ハイライト'),
+  (8, 'リップメイク'),
+  (9, 'スキンケア'),
+  (10, 'メイク落とし'),
+  (11, 'その他');
+`);
+insertCategories.run();
+
+// middle_categories を取得するクエリ
+const getMiddleCategoriesQuery = db.prepare(`
+  SELECT * FROM middle_categories WHERE big_id = @big_id;
+`);
+
+// データの挿入
+const insertMiddleCategories = db.prepare(`
+INSERT OR IGNORE INTO middle_categories (middle_id, big_id, content) VALUES
+  (1, 1, '日焼け止め'),
+  (2, 1, '下地'),
+  (3, 1, 'リキッドファンデーション'),
+  (4, 1, 'パウダーファンデーション'),
+  (5, 1, 'コンシーラー'),
+  (6, 1, 'BBクリーム'),
+  (7, 1, 'フェイスパウダー'),
+  (8, 2, 'アイシャドウ'),
+  (9, 2, 'アイライナー'),
+  (10, 3, 'アイブロウ'),
+  (11, 3, '眉マスカラ'),
+  (12, 4, 'マスカラ'),
+  (13, 5, 'チーク'),
+  (14, 5, 'クリームチーク'),
+  (15, 6, 'フェイスシャドウ'),
+  (16, 7, 'ハイライト'),
+  (17, 8, 'リップ'),
+  (18, 8, 'リップグロス'),
+  (19, 9, '化粧水'),
+  (20, 9, '美容液'),
+  (21, 9, '乳液'),
+  (22, 9, 'パック'),
+  (23, 10, 'クレンジングオイル'),
+  (24, 10, 'クレンジングリキッド'),
+  (25, 11, 'メイクキープミスト'),
+  (26, 11, 'その他');
+`);
+insertMiddleCategories.run();
   
-  const middle_id = [
-    { big_id: 1, middle_id: 1, content: "日焼け止め" },
-    { big_id: 1, middle_id: 2, content: "下地" },
-    { big_id: 1, middle_id: 3, content: "リキッドファンデーション" },
-    { big_id: 1, middle_id: 4, content: "パウダーファンデーション" },
-    { big_id: 1, middle_id: 5, content: "コンシーラー" },
-    { big_id: 1, middle_id: 6, content: "BBクリーム" },
-    { big_id: 1, middle_id: 7, content: "フェイスパウダー" },
-    { big_id: 2, middle_id: 8, content: "アイシャドウ" },
-    { big_id: 2, middle_id: 9, content: "アイライナー" },
-    { big_id: 3, middle_id: 10, content: "アイブロウ" },
-    { big_id: 3, middle_id: 11, content: "眉マスカラ" },
-    { big_id: 4, middle_id: 12, content: "マスカラ" },
-    { big_id: 5, middle_id: 13, content: "チーク" },
-    { big_id: 5, middle_id: 14, content: "クリームチーク" },
-    { big_id: 6, middle_id: 15, content: "フェイスシャドウ" },
-    { big_id: 7, middle_id: 16, content: "ハイライト" },
-    { big_id: 8, middle_id: 17, content: "リップ" },
-    { big_id: 8, middle_id: 18, content: "リップグロス" },
-    { big_id: 9, middle_id: 19, content: "化粧水" },
-    { big_id: 9, middle_id: 20, content: "美容液" },
-    { big_id: 9, middle_id: 21, content: "乳液" },
-    { big_id: 9, middle_id: 22, content: "パック" },
-    { big_id: 10, middle_id: 23, content: "クレンジングオイル" },
-    { big_id: 10, middle_id: 24, content: "クレンジングリキッド" },
-    { big_id: 11, middle_id: 25, content: "メイクキープミスト" },
-    { big_id: 11, middle_id: 26, content: "その他" },
-  ];
 
-  const limited_time = [
-    { middle_id: 1, limited: 180 }, // 日焼け止め：6ヶ月
-    { middle_id: 2, limited: 180 }, // 下地：6ヶ月
-    { middle_id: 3, limited: 365 }, // リキッドファンデーション：1年
-    { middle_id: 4, limited: 365 }, // パウダーファンデーション：1年
-    { middle_id: 5, limited: 365 }, // コンシーラー：1年
-    { middle_id: 6, limited: 365 }, // BBクリーム：1年
-    { middle_id: 7, limited: 365 }, // フェイスパウダー：1年
-    { middle_id: 8, limited: 365 }, // アイシャドウ：1年
-    { middle_id: 9, limited: 90 },  // アイライナー：3ヶ月
-    { middle_id: 10, limited: 365 }, // アイブロウ：1年
-    { middle_id: 11, limited: 365 }, // 眉マスカラ：1年
-    { middle_id: 12, limited: 90 },  // マスカラ：3ヶ月
-    { middle_id: 13, limited: 365 }, // チーク：1年
-    { middle_id: 14, limited: 365 }, // クリームチーク：1年
-    { middle_id: 15, limited: 365 }, // フェイスシャドウ：1年
-    { middle_id: 16, limited: 365 }, // ハイライト：1年
-    { middle_id: 17, limited: 180 }, // リップ：6ヶ月
-    { middle_id: 18, limited: 180 }, // リップグロス：6ヶ月
-    { middle_id: 19, limited: 120 }, // 化粧水：4ヶ月
-    { middle_id: 20, limited: 120 }, // 美容液：4ヶ月
-    { middle_id: 21, limited: 120 }, // 乳液：4ヶ月
-    { middle_id: 22, limited: 120 }, // パック：4ヶ月
-    { middle_id: 23, limited: 180 }, // クレンジングオイル：6ヶ月
-    { middle_id: 24, limited: 180 }, // クレンジングリキッド：6ヶ月
-    { middle_id: 25, limited: 180 }, // メイクキープミスト：6ヶ月
-    { middle_id: 26, limited: 180 }, // その他：6ヶ月
-  ];
-  
+console.log('テーブルとデータが正常に作成されました。');
+
+// items テーブルの作成
+const createItemsTable = db.prepare(`
+  CREATE TABLE IF NOT EXISTS items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      big_id INTEGER,
+      middle_id INTEGER,
+      limited INTEGER,
+      item_name TEXT,
+      item_memo TEXT,
+      item_count INTEGER,
+      item_opened INTEGER NOT NULL DEFAULT 0,
+      item_opened_date DATE
+  );
+`);
+createItemsTable.run();
 
 
-const createitemsTableQuery = db.prepare(`
-    CREATE TABLE IF NOT EXISTS items (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        big_id INTEGER,
-        middle_id INTEGER,
-        limited INTEGER,
-        item_name TEXT,
-        item_memo TEXT,
-        item_count INTEGER,
-        item_opened INTEGER NOT NULL DEFAULT 0,
-        item_opened_date DATE,
-        );
-    `);
 
-createitemsTableQuery.run();
-
-const gettasksQuery = db.prepare(`
-  SELECT * FROM tasks;
-  `);
-
-app.get("/", (c) => {
-  const todoList = gettasksQuery.all();
-  return c.json(todoList, 200);//c.json(todoList, 200)は、todoListをJSON形式で返すという意味
-});
-
-const insertTaskQuery = db.prepare(`
-  INSERT INTO tasks (title,checked) VALUES (?,?);
-  `);
-
-app.post("/", async (c) => {//c.req.json()は、リクエストのボディをJSON形式で返すという意味
-  const param = await c.req.json();
-
-  if (!param.title) {//titleがない場合はエラーを返す
-    throw new HTTPException(400, { message: "Title is required" });
+// categories エンドポイント
+app.get("/categories", async (c) => {
+  try {
+    console.log('カテゴリデータを取得します。');
+    const categories = getCategoriesQuery.all();  // カテゴリを取得
+    return c.json(categories, 200);  // ステータスコードと一緒にレスポンス
+    
+  } catch (error) {
+    console.error('カテゴリデータの取得エラー:', error);
+    return c.json({ error: 'カテゴリデータの取得中にエラーが発生しました' }, 500);
   }
-
-  const newTodo = {
-    checked: param.checked ? 1 : 0,
-    title: param.title,
-  };
-
- 
-  insertTaskQuery.run(newTodo.title, newTodo.checked);
-  return c.json({ message: "Successfully created" }, 200);
 });
 
+// middle_categories エンドポイント
+app.get("/middle_categories", async (c) => {
+  try {
+    console.log('中カテゴリデータを取得します。');
+    const bigId = c.req.query("big_id"); // フロントエンドから送信されたbig_idを取得
+    console.log(`big_id: ${bigId}`);
+
+    const middleCategories = getMiddleCategoriesQuery.all({ big_id: bigId });// 中カテゴリを取得
+    return c.json(middleCategories, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('中カテゴリデータの取得エラー:', error);
+    return c.json({ error: '中カテゴリデータの取得中にエラーが発生しました' }, 500);
+  }
+});
+
+// サーバー起動
 serve({
   fetch: app.fetch,
   port: 8000,
 });
-
-
