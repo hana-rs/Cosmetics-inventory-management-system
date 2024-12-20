@@ -160,7 +160,6 @@ app.post("/items", async (c) => {
   try {
     console.log('アイテムデータを登録します。');
     const item = await c.req.json();  // リクエストボディを取得
-    console.log(item);
 
     const insertItem = db.prepare(`
       INSERT INTO items (big_id, middle_id, item_name, item_count, item_opened, item_opened_date)
@@ -170,10 +169,12 @@ app.post("/items", async (c) => {
     const limitedResult = getLimitedQuery.get({ middle_id: item.middle_id });
     item.limited = limitedResult ? limitedResult.limited : 0;
 
+    console.log(item.limited);
     insertItem.run({
       ...item,
       limited: item.limited, // 明示的にlimitedをセット
     });
+    console.log(item);
 
     return c.json({ message: 'アイテムデータを登録しました' }, 200);  // ステータスコードと一緒にレスポンス
   } catch (error) {
