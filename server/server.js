@@ -56,6 +56,11 @@ const getMiddleCategoriesQuery = db.prepare(`
   SELECT * FROM middle_categories WHERE big_id = @big_id;
 `);
 
+
+const getLimitedQuery = db.prepare(`
+  SELECT limited FROM middle_categories WHERE middle_id = @middle_id;
+`);
+
 // データの挿入
 const insertMiddleCategories = db.prepare(`
 INSERT OR IGNORE INTO middle_categories (middle_id, big_id, content, limited) VALUES
@@ -137,6 +142,45 @@ app.get("/middle_categories", async (c) => {
   }
 });
 
+// items エンドポイント
+app.get("/items", async (c) => {
+  try {
+    console.log('アイテムデータを取得します。');
+    const items = db.prepare(`
+      SELECT * FROM items;
+    `).all();  // アイテムデータを取得
+    return c.json(items, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの取得エラー:', error);
+    return c.json({ error: 'アイテムデータの取得中にエラーが発生しました' }, 500);
+  }
+});
+
+app.post("/items", async (c) => {
+  try {
+    console.log('アイテムデータを登録します。');
+    const item = await c.req.json();  // リクエストボディを取得
+    console.log(item);
+
+    const insertItem = db.prepare(`
+      INSERT INTO items (big_id, middle_id, item_name, item_count, item_opened, item_opened_date)
+      VALUES (@big_id, @middle_id, @item_name, @item_count, @item_opened, @item_opened_date);
+    `);
+   
+    const limitedResult = getLimitedQuery.get({ middle_id: item.middle_id });
+    item.limited = limitedResult ? limitedResult.limited : 0;
+
+    insertItem.run({
+      ...item,
+      limited: item.limited, // 明示的にlimitedをセット
+    });
+
+    return c.json({ message: 'アイテムデータを登録しました' }, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの登録エラー:', error);
+    return c.json({ error: 'アイテムデータの登録中にエラーが発生しました' }, 500);
+  }
+});
 
 
 // サーバー起動

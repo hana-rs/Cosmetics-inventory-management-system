@@ -57,6 +57,31 @@ const CosmeticApp = () => {
     setSelectedMiddleCategory(e.target.value); // 選択されたアイテムを更新
   };
 
+  const handleAddItem = async () => {
+    // アイテムを追加する処理
+    const item = {
+      big_id: selectedCategory,
+      middle_id: selectedMiddleCategory,
+      item_name: document.querySelector('input[type="text"]').value,
+      item_count: document.querySelector('input[type="number"]').value,
+      item_opened: status === 'opened' ? 1 : 0,
+      item_opened_date: status === 'opened' ? openDate : null,
+    };
+
+    const response = await fetch('http://localhost:8000/items', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(item),
+    });
+
+    if (response.status === 200) {
+      alert('登録しました');
+    } else {
+      alert('登録に失敗しました');
+    }
+  }
 
   
 
@@ -67,7 +92,6 @@ const CosmeticApp = () => {
         <label>大分類：</label>
         <select value={selectedCategory} onChange={handleCategoryChange}>
           <option value="">選択してください</option>
-          console.log("categories")
           console.log(categories)
           {categories.map((category) => (
             <option key={category.big_id} value={category.big_id}>
@@ -81,7 +105,7 @@ const CosmeticApp = () => {
         <select value={selectedMiddleCategory} onChange={handleMiddleCategoryChange} disabled={!selectedCategory}>
           <option value="">選択してください</option>
           {items.map((item) => (
-            <option>
+            <option key={item.middle_id} value={item.middle_id}>
               {item.content}
             </option>
           ))}
@@ -135,11 +159,7 @@ const CosmeticApp = () => {
           </label>
         </div>
     </div>
-      <button
-        onClick={() => {
-          alert("登録しました");
-        }}
-      >
+      <button onClick={handleAddItem}>
         登録
       </button>
     </div>
