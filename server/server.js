@@ -23,7 +23,7 @@ const createMiddleCategoriesTable = db.prepare(`
   CREATE TABLE IF NOT EXISTS middle_categories (
       middle_id INTEGER PRIMARY KEY,
       big_id INTEGER,
-      content TEXT NOT NULL
+      content TEXT NOT NULL,
       limited INTEGER
   );
 `);
