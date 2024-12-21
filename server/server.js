@@ -107,7 +107,8 @@ const createItemsTable = db.prepare(`
       item_memo TEXT,
       item_count INTEGER,
       item_opened INTEGER NOT NULL DEFAULT 0,
-      item_opened_date DATE
+      item_opened_date DATE,
+      item_limited_date DATE
   );
 `);
 createItemsTable.run();
@@ -174,6 +175,20 @@ app.post("/items", async (c) => {
       ...item,
       limited: item.limited, // 明示的にlimitedをセット
     });
+
+    const updateItemLimitedDate = db.prepare(`
+      UPDATE items SET item_limited_date = @item_limited_date WHERE id = @id;
+    `);
+
+    //item_limited_dateを計算
+    const dt = new Date(item.item_opened_date);
+    dt.setDate(dt.getDate() + item.limited);
+    console.log(dt);
+    updateItemLimitedDate.run({//item_limited_dateを更新
+      id: item.id,
+      item_limited_date: dt.toLocaleDateString(),
+    });
+
     console.log(item);
 
     return c.json({ message: 'アイテムデータを登録しました' }, 200);  // ステータスコードと一緒にレスポンス
