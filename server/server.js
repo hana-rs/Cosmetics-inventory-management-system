@@ -162,8 +162,8 @@ app.post("/items", async (c) => {
     const item = await c.req.json();  // リクエストボディを取得
 
     const insertItem = db.prepare(`
-      INSERT INTO items (big_id, middle_id, item_name, item_count, item_opened, item_opened_date)
-      VALUES (@big_id, @middle_id, @item_name, @item_count, @item_opened, @item_opened_date);
+      INSERT INTO items (big_id, middle_id, item_name, item_memo, item_count, item_opened, item_opened_date)
+      VALUES (@big_id, @middle_id, @item_name, @item_memo, @item_count, @item_opened, @item_opened_date);
     `);
    
     const limitedResult = getLimitedQuery.get({ middle_id: item.middle_id });

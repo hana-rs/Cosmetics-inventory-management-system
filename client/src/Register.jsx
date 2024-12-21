@@ -61,8 +61,9 @@ const CosmeticApp = () => {
     const item = {
       big_id: selectedCategory,
       middle_id: selectedMiddleCategory,
-      item_name: document.querySelector('input[type="text"]').value,
-      item_count: document.querySelector('input[type="number"]').value,
+      item_name: document.getElementById('itemName').value,
+      item_memo: document.getElementById('itemMemo').value,
+      item_count: document.getElementById('itemCount').value,
       item_opened: status === 'opened' ? 1 : 0,
       item_opened_date: status === 'opened' ? openDate : null,
     };
@@ -91,7 +92,6 @@ const CosmeticApp = () => {
         <label>大分類：</label>
         <select value={selectedCategory} onChange={handleCategoryChange}>
           <option value="">選択してください</option>
-          console.log(categories)
           {categories.map((category) => (
             <option key={category.big_id} value={category.big_id}>
               {category.content}
@@ -112,40 +112,38 @@ const CosmeticApp = () => {
       </div>
       <div>
         <label>アイテム名：</label>
-        <input type="text" />
+        <input type="text" id="itemName" />
       </div>
       <div>
         <label>色番号：</label>
-        <input type="text" />
+        <input type="text" id="itemMemo" />
       </div>
       <div>
         <label>在庫数：</label>
-        <input type="number" min="1" step="1" />
+        <input type="number" min="1" step="1" id="itemCount" />
       </div>
       <div>
-      <label>開封日：</label>
-      <div>
-        {/* ラジオボタン */}
-        <label>
-          <input
-            type="radio"
-            value="unopened"
-            checked={status === 'unopened'}
-            onChange={handleStatusChange}
-          />
-          未開封
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="opened"
-            checked={status === 'opened'}
-            onChange={handleStatusChange}
-          />
-          開封済
-        </label>
-      </div>
-
+        <label>開封日：</label>
+        <div>
+          <label>
+            <input
+              type="radio"
+              value="unopened"
+              checked={status === 'unopened'}
+              onChange={handleStatusChange}
+            />
+            未開封
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="opened"
+              checked={status === 'opened'}
+              onChange={handleStatusChange}
+            />
+            開封済
+          </label>
+        </div>
         <div>
           <label>
             開封した日：
@@ -157,7 +155,7 @@ const CosmeticApp = () => {
             />
           </label>
         </div>
-    </div>
+      </div>
       <button onClick={handleAddItem}>
         登録
       </button>
