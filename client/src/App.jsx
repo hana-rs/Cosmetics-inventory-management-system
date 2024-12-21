@@ -53,6 +53,25 @@ function App() {
     }
   }
 
+  //item_openedを更新する関数
+  const item_open = async (itemId) => {
+    const response = await fetch("http://localhost:8000/items/open", {//fetch関数を使って、サーバーにリクエストを送信
+      method: "PUT",
+      headers: {
+      "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: itemId,
+      }),
+    })
+    const data = await response.json()
+
+    if(response.status === 200){
+      setitems([...items, data])//setTasks関数を使って、tasksに新しいタスクを追加
+      fetchitems()
+    }
+  }
+
   // const addTask = async () => {//addTask関数は、新しいタスクを追加するための関数
   //   const input = document.querySelector("input")//input要素を取得
   //   const response = await fetch("http://localhost:8000", {//fetch関数を使って、サーバーにリクエストを送信
@@ -86,10 +105,14 @@ function App() {
               {item.item_name} {item.item_memo} 在庫数:{item.item_count}
               <button onClick={() => add_item_count(item.id)}>在庫を追加</button>
               {item.item_opened !== 0 && (
-                <> 開封日：{item.item_opened_date} 期限日：{item.item_limited_date}</>    
+               <> 開封日：{item.item_opened_date} 期限日：{item.item_limited_date} <button onClick={() => dec_item_count(item.id)}>使い切った</button></>
               )}
-              <button onClick={() => dec_item_count(item.id)}>使い切った</button>
+              {item.item_opened === 0 && (
+                <> <button onClick={() => item_open(item.id)}>使用開始</button></>
+              )}
+            
             </li>
+              
           ))}
         </ul>
       </div>

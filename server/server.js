@@ -240,6 +240,49 @@ app.put("/items/dec", async (c) => {
   }
 });
 
+// PUTリクエストを受け付けるエンドポイント
+app.put("/items/open", async (c) => {
+  try {
+    console.log('アイテムデータを更新します。');
+    const item = await c.req.json();  // リクエストボディを取得
+
+    const updateItem = db.prepare(`
+      UPDATE items SET item_opened = 1, item_opened_date = DATE('now') WHERE id = @id;
+    `);
+    //middle_idを取得
+    const middle_id = db.prepare(`
+      SELECT middle_id FROM items WHERE id = @id;
+    `).get(item);
+    console.log(middle_id);
+    //limitedを取得
+    const limited = db.prepare(`
+      SELECT limited FROM middle_categories WHERE middle_id = @middle_id;
+    `).get(middle_id);
+    console.log(limited);
+    //item_limited_dateを計算
+    const dt = new Date();
+    dt.setDate(dt.getDate() + limited.limited);
+    const formattedDate = dt.toISOString().split('T')[0];
+    console.log(dt);
+    //item_limited_dateを更新
+    const updateItemLimitedDate = db.prepare(`
+      UPDATE items SET item_limited_date = @item_limited_date WHERE id = @id;
+    `);
+    updateItemLimitedDate.run({ // item_limited_dateを更新
+      id: item.id,
+      item_limited_date: formattedDate,
+    });
+    
+
+    updateItem.run(item);
+
+    return c.json({ message: 'アイテムデータを更新しました' }, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの更新エラー:', error);
+    return c.json({ error: 'アイテムデータの更新中にエラーが発生しました' }, 500);
+  }
+});
+
 
 // サーバー起動
 serve({
