@@ -64,7 +64,12 @@ function App() {
         <ul>
           {items.map((item) => (
             <li key={item.id}>
-              {item.item_name} {item.item_memo} 在庫数:{item.item_count}<button onClick={() => add_item_count(item.id)}>在庫を追加</button> 開封日：{item.item_opened_date} 期限日：{item.item_limited_date}
+              {item.item_name} {item.item_memo} 在庫数:{item.item_count}
+              <button onClick={() => add_item_count(item.id)}>在庫を追加</button>
+              {item.item_opened !== 0 && (
+                <> 開封日：{item.item_opened_date} 期限日：{item.item_limited_date}</>    
+              )}
+
             </li>
           ))}
         </ul>
