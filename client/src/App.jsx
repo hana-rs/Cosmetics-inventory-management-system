@@ -107,7 +107,7 @@ function App() {
               {item.item_opened !== 0 && (
                <> 開封日：{item.item_opened_date} 期限日：{item.item_limited_date} <button onClick={() => dec_item_count(item.id)}>使い切った</button></>
               )}
-              {item.item_opened === 0 && (
+              {item.item_opened === 0 && item.item_count!==0 && (
                 <> <button onClick={() => item_open(item.id)}>使用開始</button></>
               )}
             
