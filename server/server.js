@@ -163,8 +163,8 @@ app.post("/items", async (c) => {
     const item = await c.req.json();  // リクエストボディを取得
 
     const insertItem = db.prepare(`
-      INSERT INTO items (big_id, middle_id, item_name, item_memo, item_count, item_opened, item_opened_date)
-      VALUES (@big_id, @middle_id, @item_name, @item_memo, @item_count, @item_opened, @item_opened_date);
+      INSERT INTO items (big_id, middle_id, item_name, item_memo, item_count, item_opened, item_opened_date, limited)
+      VALUES (@big_id, @middle_id, @item_name, @item_memo, @item_count, @item_opened, @item_opened_date, @limited);
     `);
    
     const limitedResult = getLimitedQuery.get({ middle_id: item.middle_id });
@@ -180,13 +180,18 @@ app.post("/items", async (c) => {
       UPDATE items SET item_limited_date = @item_limited_date WHERE id = @id;
     `);
 
-    //item_limited_dateを計算
+    // item_limited_dateを計算
     const dt = new Date(item.item_opened_date);
     dt.setDate(dt.getDate() + item.limited);
+    const formattedDate = dt.toISOString().split('T')[0];
     console.log(dt);
-    updateItemLimitedDate.run({//item_limited_dateを更新
-      id: item.id,
-      item_limited_date: dt.toLocaleDateString(),
+
+    // 挿入したアイテムのIDを取得
+    const lastInsertRowId = db.prepare('SELECT last_insert_rowid() as id').get().id;
+
+    updateItemLimitedDate.run({ // item_limited_dateを更新
+      id: lastInsertRowId,
+      item_limited_date: formattedDate,
     });
 
     console.log(item);
