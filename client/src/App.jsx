@@ -17,7 +17,26 @@ function App() {
 
   //item_countを追加する関数
   const add_item_count = async (itemId) => {
-    const response = await fetch("http://localhost:8000/items", {//fetch関数を使って、サーバーにリクエストを送信
+    const response = await fetch("http://localhost:8000/items/add", {//fetch関数を使って、サーバーにリクエストを送信
+      method: "PUT",
+      headers: {
+      "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: itemId,
+      }),
+    })
+    const data = await response.json()
+
+    if(response.status === 200){
+      setitems([...items, data])//setTasks関数を使って、tasksに新しいタスクを追加
+      fetchitems()
+    }
+  }
+
+  //item_countを減らす関数
+  const dec_item_count = async (itemId) => {
+    const response = await fetch("http://localhost:8000/items/dec", {//fetch関数を使って、サーバーにリクエストを送信
       method: "PUT",
       headers: {
       "Content-Type": "application/json",
@@ -69,7 +88,7 @@ function App() {
               {item.item_opened !== 0 && (
                 <> 開封日：{item.item_opened_date} 期限日：{item.item_limited_date}</>    
               )}
-
+              <button onClick={() => dec_item_count(item.id)}>使い切った</button>
             </li>
           ))}
         </ul>

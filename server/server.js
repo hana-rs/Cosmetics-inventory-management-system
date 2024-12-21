@@ -205,13 +205,31 @@ app.post("/items", async (c) => {
 });
 
 // PUTリクエストを受け付けるエンドポイント
-app.put("/items", async (c) => {
+app.put("/items/add", async (c) => {
   try {
     console.log('アイテムデータを更新します。');
     const item = await c.req.json();  // リクエストボディを取得
 
     const updateItem = db.prepare(`
       UPDATE items SET item_count = item_count + 1 WHERE id = @id;
+    `);
+    updateItem.run(item);
+
+    return c.json({ message: 'アイテムデータを更新しました' }, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの更新エラー:', error);
+    return c.json({ error: 'アイテムデータの更新中にエラーが発生しました' }, 500);
+  }
+});
+
+// PUTリクエストを受け付けるエンドポイント
+app.put("/items/dec", async (c) => {
+  try {
+    console.log('アイテムデータを更新します。');
+    const item = await c.req.json();  // リクエストボディを取得
+
+    const updateItem = db.prepare(`
+      UPDATE items SET item_count = item_count - 1 WHERE id = @id;
     `);
     updateItem.run(item);
 
