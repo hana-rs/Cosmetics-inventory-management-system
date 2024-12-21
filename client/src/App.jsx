@@ -72,33 +72,19 @@ function App() {
     }
   }
 
-  // const addTask = async () => {//addTask関数は、新しいタスクを追加するための関数
-  //   const input = document.querySelector("input")//input要素を取得
-  //   const response = await fetch("http://localhost:8000", {//fetch関数を使って、サーバーにリクエストを送信
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       title: input.value,
-  //       completed: 0,
-  //     }),
-  //   })
-  //   const data = await response.json()
-
-  //   if(response.status === 200){
-  //     setTasks([...tasks, data])//setTasks関数を使って、tasksに新しいタスクを追加
-  //     input.value = ""
-  //     fetchTasks()
-      
-  //   }
-  // }
+  //itemをソートする関数
+  const sortitems = async () => {
+    const response = await fetch("http://localhost:8000/items/sort")
+    const data = await response.json()
+    setitems(data)//setTasks関数を使って、dataをtasksにセット
+  }
 
   return (
     <>
       <div>
         <h1>LIST</h1>
         <button onClick={fetchitems}>リストを取得</button>
+        <button onClick={sortitems}>ソート</button>
         <ul>
           {items.map((item) => (
             <li key={item.id}>

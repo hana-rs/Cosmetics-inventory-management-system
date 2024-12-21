@@ -293,6 +293,26 @@ app.put("/items/open", async (c) => {
   }
 });
 
+//sort エンドポイント
+//在庫数が少ない順に並び替える
+app.get("/items/sort", async (c) => {
+  try {
+    console.log('アイテムデータを取得します。');
+    const items = db.prepare(`
+      SELECT * FROM items;
+    `).all();  // アイテムデータを取得
+    items.sort((a, b) => a.item_count - b.item_count);
+
+    console.log(items);
+    
+
+    return c.json(items, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの取得エラー:', error);
+    return c.json({ error: 'アイテムデータの取得中にエラーが発生しました' }, 500);
+  }
+});
+
 
 // サーバー起動
 serve({
