@@ -150,6 +150,8 @@ app.get("/items", async (c) => {
     const items = db.prepare(`
       SELECT * FROM items;
     `).all();  // アイテムデータを取得
+    //在庫数が少ない順に並び替える
+    items.sort((a, b) => a.item_count - b.item_count);
     return c.json(items, 200);  // ステータスコードと一緒にレスポンス
   } catch (error) {
     console.error('アイテムデータの取得エラー:', error);
@@ -304,7 +306,7 @@ app.get("/items/sort", async (c) => {
     items.sort((a, b) => a.item_count - b.item_count);
 
     console.log(items);
-    
+
 
     return c.json(items, 200);  // ステータスコードと一緒にレスポンス
   } catch (error) {
