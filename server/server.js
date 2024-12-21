@@ -229,7 +229,7 @@ app.put("/items/dec", async (c) => {
     const item = await c.req.json();  // リクエストボディを取得
 
     const updateItem = db.prepare(`
-      UPDATE items SET item_count = item_count - 1 WHERE id = @id;
+      UPDATE items SET item_count = MAX(item_count - 1, 0) WHERE id = @id;
     `);
     updateItem.run(item);
 
@@ -272,7 +272,7 @@ app.put("/items/open", async (c) => {
       id: item.id,
       item_limited_date: formattedDate,
     });
-    
+
 
     updateItem.run(item);
 
