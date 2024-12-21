@@ -180,6 +180,7 @@ app.post("/items", async (c) => {
       UPDATE items SET item_limited_date = @item_limited_date WHERE id = @id;
     `);
 
+    if(item.item_opened === 1) {
     // item_limited_dateを計算
     const dt = new Date(item.item_opened_date);
     dt.setDate(dt.getDate() + item.limited);
@@ -193,7 +194,7 @@ app.post("/items", async (c) => {
       id: lastInsertRowId,
       item_limited_date: formattedDate,
     });
-
+  }
     console.log(item);
 
     return c.json({ message: 'アイテムデータを登録しました' }, 200);  // ステータスコードと一緒にレスポンス
