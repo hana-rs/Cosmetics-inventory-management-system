@@ -231,6 +231,16 @@ app.put("/items/dec", async (c) => {
     const updateItem = db.prepare(`
       UPDATE items SET item_count = MAX(item_count - 1, 0) WHERE id = @id;
     `);
+    //item_openedを0にして、item_opened_dateをnullにする
+    const item_count = db.prepare(`
+      SELECT item_count FROM items WHERE id = @id;
+    `).get(item);
+    console.log(item_count);
+      const updateItemOpened = db.prepare(`
+        UPDATE items SET item_opened = 0, item_opened_date = null WHERE id = @id;
+      `);
+      updateItemOpened.run(item);
+
     updateItem.run(item);
 
     return c.json({ message: 'アイテムデータを更新しました' }, 200);  // ステータスコードと一緒にレスポンス
