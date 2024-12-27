@@ -79,6 +79,25 @@ function App() {
     setitems(data)//setTasks関数を使って、dataをtasksにセット
   }
 
+  //itemを編集する関数
+  const item_edit = async (itemId) => {
+    const response = await fetch("http://localhost:8000/items/edit", {//fetch関数を使って、サーバーにリクエストを送信
+      method: "PUT",
+      headers: {
+      "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: itemId,
+      }),
+    })
+    const data = await response.json()
+
+    if(response.status === 200){
+      setitems([...items, data])//setTasks関数を使って、tasksに新しいタスクを追加
+      fetchitems()
+    }
+  }
+
   return (
     <>
       <div>
@@ -96,6 +115,7 @@ function App() {
               {item.item_opened === 0 && item.item_count!==0 && (
                 <> <button onClick={() => item_open(item.id)}>使用開始</button></>
               )}
+              <button onClick={() => item_edit(item.id)}>編集</button>
             
             </li>
               
