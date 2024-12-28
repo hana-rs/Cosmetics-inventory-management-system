@@ -312,6 +312,25 @@ app.get("/items/:id", async (c) => {
 }
 );
 
+app.put("/items/:id", async (c) => {
+  try {
+    console.log('アイテムデータを更新します。');
+    const id = c.req.param("id");  // リクエストパラメータを取得
+    const item = await c.req.json();  // リクエストボディを取得
+
+    const updateItem = db.prepare(`
+      UPDATE items SET big_id = @big_id, middle_id = @middle_id, item_name = @item_name, item_memo = @item_memo, item_count = @item_count, item_opened = @item_opened, item_opened_date = @item_opened_date WHERE id = @id;
+    `);
+    updateItem.run({ ...item, id });
+
+    return c.json({ message: 'アイテムデータを更新しました' }, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの更新エラー:', error);
+    return c.json({ error: 'アイテムデータの更新中にエラーが発生しました' }, 500);
+  }
+}
+);
+
 //sort エンドポイント
 //在庫数が少ない順に並び替える
 app.get("/items/sort", async (c) => {

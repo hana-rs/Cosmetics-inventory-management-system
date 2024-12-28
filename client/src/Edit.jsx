@@ -4,10 +4,21 @@ import { useParams, useNavigate } from "react-router-dom";
 const EditItem = () => {
   const { id } = useParams(); // URLパラメータから編集対象のIDを取得
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]); // カテゴリデータ
+  const [middlecategories, setMiddleCategories] = useState([]); // アイテムデータ
+  const [selectedCategory, setSelectedCategory] = useState(""); // 選択されたカテゴリ
+  const [selectedMiddleCategory, setSelectedMiddleCategory] = useState(""); // 選択されたアイテム
+  const [status, setStatus] = useState('unopened'); // デフォルトは未開封
+  const [openDate, setOpenDate] = useState('');
 
-  const [categories, setCategories] = useState([]);
-  const [middlecategories, setMiddleCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+  };
+
+  const handleDateChange = (e) => {
+    setOpenDate(e.target.value);
+  };
+
 
   const [item, setItem] = useState({
     big_id: "",
@@ -20,21 +31,9 @@ const EditItem = () => {
   });
 
   useEffect(() => {
-    fetchCategories(); // 大分類データを取得
+    fetchMakeupCategories(); // 大分類データを取得
     fetchItemData(); // 編集対象データを取得
   }, []);
-
-  // 大分類データを取得する関数
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/categories");
-      if (!response.ok) throw new Error("大分類データの取得に失敗しました");
-      const data = await response.json();
-      setCategories(data);
-    } catch (error) {
-      alert(error.message);
-    }
-  };
 
   // 編集対象データを取得する関数
   const fetchItemData = async () => {
@@ -56,17 +55,37 @@ const EditItem = () => {
       alert(error.message);
     }
   };
+ // カテゴリデータを取得する関数
+  const fetchMakeupCategories = async () => {
+      const response = await fetch("http://localhost:8000/categories")
+      const data = await response.json();
+      setCategories(data)
+      fetchMiddleCategories(data.big_id)
+  };
 
-  // 中分類データを取得する関数
+  // アイテムデータを取得する関数
   const fetchMiddleCategories = async (categoryId) => {
     try {
       const response = await fetch(`http://localhost:8000/middle_categories?big_id=${categoryId}`);
-      if (!response.ok) throw new Error("中分類データの取得に失敗しました");
       const data = await response.json();
       setMiddleCategories(data);
+      
     } catch (error) {
-      alert(error.message);
+      console.error("アイテムデータの取得中にエラーが発生しました:", error);
     }
+  };
+
+  const handleCategoryChange = (e) => {// カテゴリが変更されたときの処理
+    const selected = e.target.value;
+    setSelectedCategory(selected);
+    setSelectedMiddleCategory(""); // アイテムをリセット
+    if (selected) {
+      fetchMiddleCategories(selected); // 選択されたカテゴリに対応するアイテムを取得
+    }
+  };
+
+  const handleMiddleCategoryChange = (e) => {
+    setSelectedMiddleCategory(e.target.value); // 選択されたアイテムを更新
   };
 
   // 入力変更時のハンドラ
@@ -75,37 +94,39 @@ const EditItem = () => {
     setItem({ ...item, [name]: value });
   };
 
-  // 大分類変更時のハンドラ
-  const handleCategoryChange = (e) => {
-    const selected = e.target.value;
-    setItem({ ...item, big_id: selected, middle_id: "" });
-    if (selected) fetchMiddleCategories(selected);
-  };
-
   // 保存ボタン押下時のハンドラ
-  const handleSubmit = async () => {
-    setIsLoading(true);
+  const handleEditItem = async () => {
+    // ステート `item` を基にデータを作成
+    const updatedItem = {
+      big_id: selectedCategory || item.big_id, // 選択されたカテゴリまたは既存の値
+      middle_id: selectedMiddleCategory || item.middle_id, // 選択された中分類または既存の値
+      item_name: item.item_name, // ステートの `item_name`
+      item_memo: item.item_memo, // ステートの `item_memo`
+      item_count: item.item_count, // ステートの `item_count`
+      item_opened: status === "opened" ? 1 : 0, // ステータスに基づくフラグ
+      item_opened_date: status === "opened" ? openDate : null, // 状態に応じた開封日
+    };
+  
     try {
       const response = await fetch(`http://localhost:8000/items/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(item),
+        body: JSON.stringify(updatedItem), // JSON に変換
       });
-
+  
       if (response.ok) {
-        alert("編集が完了しました");
-        navigate("/list");
+        alert("登録しました");
+        navigate("/list"); // リストページにリダイレクト
       } else {
-        alert("編集に失敗しました");
+        throw new Error("登録に失敗しました");
       }
     } catch (error) {
-      alert("エラーが発生しました");
-    } finally {
-      setIsLoading(false);
+      alert(error.message);
     }
   };
+  
 
   return (
     <div>
@@ -126,7 +147,7 @@ const EditItem = () => {
         <select
           name="middle_id"
           value={item.middle_id}
-          onChange={handleInputChange}
+          onChange={handleMiddleCategoryChange}
           disabled={!item.big_id}
         >
           <option value="">選択してください</option>
@@ -202,8 +223,8 @@ const EditItem = () => {
           </label>
         </div>
       </div>
-      <button onClick={handleSubmit} disabled={isLoading}>
-        {isLoading ? "保存中..." : "保存"}
+      <button onClick={handleEditItem}>
+        保存
       </button>
     </div>
   );
