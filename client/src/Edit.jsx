@@ -1,97 +1,118 @@
 import { useState, useEffect } from "react";
-//import "./Register.css";
+import { useParams, useNavigate } from "react-router-dom";
 
-const CosmeticApp = () => {
-  const [categories, setCategories] = useState([]); // カテゴリデータ
-  const [items, setItems] = useState([]); // アイテムデータ
-  const [selectedCategory, setSelectedCategory] = useState(""); // 選択されたカテゴリ
-  const [selectedMiddleCategory, setSelectedMiddleCategory] = useState(""); // 選択されたアイテム
-  const [status, setStatus] = useState('unopened'); // デフォルトは未開封
-  const [openDate, setOpenDate] = useState('');
+const EditItem = () => {
+  const { id } = useParams(); // URLパラメータから編集対象のIDを取得
+  const navigate = useNavigate();
 
-  const handleStatusChange = (e) => {
-    setStatus(e.target.value);
-  };
+  const [categories, setCategories] = useState([]);
+  const [middlecategories, setMiddleCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleDateChange = (e) => {
-    setOpenDate(e.target.value);
-  };
+  const [item, setItem] = useState({
+    big_id: "",
+    middle_id: "",
+    item_name: "",
+    item_memo: "",
+    item_count: 0,
+    item_opened: 0,
+    item_opened_date: "",
+  });
 
   useEffect(() => {
-    // 初回レンダリング時にカテゴリデータを取得
-    fetchMakeupCategories();
+    fetchCategories(); // 大分類データを取得
+    fetchItemData(); // 編集対象データを取得
   }, []);
 
-  
-
-  // カテゴリデータを取得する関数
-  const fetchMakeupCategories = async () => {
-      const response = await fetch("http://localhost:8000/categories")
+  // 大分類データを取得する関数
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/categories");
+      if (!response.ok) throw new Error("大分類データの取得に失敗しました");
       const data = await response.json();
-      setCategories(data)
-      fetchMiddleCategories(data.big_id)
+      setCategories(data);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
-  // アイテムデータを取得する関数
+  // 編集対象データを取得する関数
+  const fetchItemData = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/items/${id}`);
+      if (!response.ok) throw new Error("アイテムデータの取得に失敗しました");
+      const data = await response.json();
+      setItem({
+        big_id: data.big_id,
+        middle_id: data.middle_id,
+        item_name: data.item_name,
+        item_memo: data.item_memo,
+        item_count: data.item_count,
+        item_opened: data.item_opened,
+        item_opened_date: data.item_opened_date,
+      });
+      fetchMiddleCategories(data.big_id); // 中分類データを取得
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  // 中分類データを取得する関数
   const fetchMiddleCategories = async (categoryId) => {
     try {
       const response = await fetch(`http://localhost:8000/middle_categories?big_id=${categoryId}`);
+      if (!response.ok) throw new Error("中分類データの取得に失敗しました");
       const data = await response.json();
-      setItems(data);
-      
+      setMiddleCategories(data);
     } catch (error) {
-      console.error("アイテムデータの取得中にエラーが発生しました:", error);
+      alert(error.message);
     }
   };
 
-  const handleCategoryChange = (e) => {// カテゴリが変更されたときの処理
+  // 入力変更時のハンドラ
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setItem({ ...item, [name]: value });
+  };
+
+  // 大分類変更時のハンドラ
+  const handleCategoryChange = (e) => {
     const selected = e.target.value;
-    setSelectedCategory(selected);
-    setSelectedMiddleCategory(""); // アイテムをリセット
-    if (selected) {
-      fetchMiddleCategories(selected); // 選択されたカテゴリに対応するアイテムを取得
-    }
+    setItem({ ...item, big_id: selected, middle_id: "" });
+    if (selected) fetchMiddleCategories(selected);
   };
 
-  const handleMiddleCategoryChange = (e) => {
-    setSelectedMiddleCategory(e.target.value); // 選択されたアイテムを更新
-  };
+  // 保存ボタン押下時のハンドラ
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8000/items/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(item),
+      });
 
-  const handleAddItem = async () => {
-    // アイテムを追加する処理
-    const item = {
-      big_id: selectedCategory,
-      middle_id: selectedMiddleCategory,
-      item_name: document.getElementById('itemName').value,
-      item_memo: document.getElementById('itemMemo').value,
-      item_count: document.getElementById('itemCount').value,
-      item_opened: status === 'opened' ? 1 : 0,
-      item_opened_date: status === 'opened' ? openDate : null,
-    };
-
-    const response = await fetch('http://localhost:8000/items', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(item),
-    });
-
-    if (response.status === 200) {
-      alert('登録しました');
-    } else {
-      alert('登録に失敗しました');
+      if (response.ok) {
+        alert("編集が完了しました");
+        navigate("/list");
+      } else {
+        alert("編集に失敗しました");
+      }
+    } catch (error) {
+      alert("エラーが発生しました");
+    } finally {
+      setIsLoading(false);
     }
-  }
-
-  
+  };
 
   return (
     <div>
       <h1>編集</h1>
       <div>
         <label>大分類：</label>
-        <select value={selectedCategory} onChange={handleCategoryChange}>
+        <select name="big_id" value={item.big_id} onChange={handleCategoryChange}>
           <option value="">選択してください</option>
           {categories.map((category) => (
             <option key={category.big_id} value={category.big_id}>
@@ -102,26 +123,47 @@ const CosmeticApp = () => {
       </div>
       <div>
         <label>中分類：</label>
-        <select value={selectedMiddleCategory} onChange={handleMiddleCategoryChange} disabled={!selectedCategory}>
+        <select
+          name="middle_id"
+          value={item.middle_id}
+          onChange={handleInputChange}
+          disabled={!item.big_id}
+        >
           <option value="">選択してください</option>
-          {items.map((item) => (
-            <option key={item.middle_id} value={item.middle_id}>
-              {item.content}
+          {middlecategories.map((middle) => (
+            <option key={middle.middle_id} value={middle.middle_id}>
+              {middle.content}
             </option>
           ))}
         </select>
       </div>
       <div>
         <label>アイテム名：</label>
-        <input type="text" id="itemName" />
+        <input
+          type="text"
+          name="item_name"
+          value={item.item_name}
+          onChange={handleInputChange}
+        />
       </div>
       <div>
         <label>色番号：</label>
-        <input type="text" id="itemMemo" />
+        <input
+          type="text"
+          name="item_memo"
+          value={item.item_memo}
+          onChange={handleInputChange}
+        />
       </div>
       <div>
         <label>在庫数：</label>
-        <input type="number" min="1" step="1" id="itemCount" />
+        <input
+          type="number"
+          name="item_count"
+          min="1"
+          value={item.item_count}
+          onChange={handleInputChange}
+        />
       </div>
       <div>
         <label>開封日：</label>
@@ -129,18 +171,20 @@ const CosmeticApp = () => {
           <label>
             <input
               type="radio"
-              value="unopened"
-              checked={status === 'unopened'}
-              onChange={handleStatusChange}
+              name="item_opened"
+              value={0}
+              checked={item.item_opened === 0}
+              onChange={() => setItem({ ...item, item_opened: 0 })}
             />
             未開封
           </label>
           <label>
             <input
               type="radio"
-              value="opened"
-              checked={status === 'opened'}
-              onChange={handleStatusChange}
+              name="item_opened"
+              value={1}
+              checked={item.item_opened === 1}
+              onChange={() => setItem({ ...item, item_opened: 1 })}
             />
             開封済
           </label>
@@ -150,18 +194,19 @@ const CosmeticApp = () => {
             開封した日：
             <input
               type="date"
-              value={openDate}
-              onChange={handleDateChange}
-              disabled={status === 'unopened'}
+              name="item_opened_date"
+              value={item.item_opened_date || ""}
+              onChange={handleInputChange}
+              disabled={item.item_opened !== 1}
             />
           </label>
         </div>
       </div>
-      <button onClick={handleAddItem}>
-        保存
+      <button onClick={handleSubmit} disabled={isLoading}>
+        {isLoading ? "保存中..." : "保存"}
       </button>
     </div>
   );
 };
 
-export default CosmeticApp;
+export default EditItem;

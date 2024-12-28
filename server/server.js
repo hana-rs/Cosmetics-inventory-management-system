@@ -295,6 +295,23 @@ app.put("/items/open", async (c) => {
   }
 });
 
+app.get("/items/:id", async (c) => {
+  try {
+    console.log('アイテムデータを取得します。');
+    const id = c.req.param("id");  // リクエストパラメータを取得
+    
+    const item = db.prepare(`
+      SELECT * FROM items WHERE id = @id;
+    `).get({ id });  // アイテムデータを取得
+
+    return c.json(item, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの取得エラー:', error);
+    return c.json({ error: 'アイテムデータの取得中にエラーが発生しました' }, 500);
+  }
+}
+);
+
 //sort エンドポイント
 //在庫数が少ない順に並び替える
 app.get("/items/sort", async (c) => {
@@ -314,7 +331,6 @@ app.get("/items/sort", async (c) => {
     return c.json({ error: 'アイテムデータの取得中にエラーが発生しました' }, 500);
   }
 });
-
 
 // サーバー起動
 serve({

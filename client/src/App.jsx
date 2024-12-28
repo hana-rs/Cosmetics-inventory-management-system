@@ -11,7 +11,6 @@ function App() {
           <ul>
             <li><Link to="/">Register</Link></li>
             <li><Link to="/list">List</Link></li>
-            <li><Link to="/edit">Edit</Link></li>
           </ul>
         </nav>
       </header>
@@ -19,7 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Register />} />
           <Route path="/list" element={<List />} />
-          <Route path="/edit" element={<Edit />} />
+          <Route path="/edit/:id" element={<Edit />} />
         </Routes>
       </main>
     </Router>

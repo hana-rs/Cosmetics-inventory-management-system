@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 const CosmeticApp = () => {
   const [categories, setCategories] = useState([]); // カテゴリデータ
-  const [items, setItems] = useState([]); // アイテムデータ
+  const [middlecategories, setMiddleCategories] = useState([]); // アイテムデータ
   const [selectedCategory, setSelectedCategory] = useState(""); // 選択されたカテゴリ
   const [selectedMiddleCategory, setSelectedMiddleCategory] = useState(""); // 選択されたアイテム
   const [status, setStatus] = useState('unopened'); // デフォルトは未開封
@@ -37,7 +37,7 @@ const CosmeticApp = () => {
     try {
       const response = await fetch(`http://localhost:8000/middle_categories?big_id=${categoryId}`);
       const data = await response.json();
-      setItems(data);
+      setMiddleCategories(data);
       
     } catch (error) {
       console.error("アイテムデータの取得中にエラーが発生しました:", error);
@@ -104,7 +104,7 @@ const CosmeticApp = () => {
         <label>中分類：</label>
         <select value={selectedMiddleCategory} onChange={handleMiddleCategoryChange} disabled={!selectedCategory}>
           <option value="">選択してください</option>
-          {items.map((item) => (
+          {middlecategories.map((item) => (
             <option key={item.middle_id} value={item.middle_id}>
               {item.content}
             </option>
