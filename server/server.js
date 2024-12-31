@@ -322,6 +322,7 @@ app.put("/items/:id", async (c) => {
       UPDATE items SET big_id = @big_id, middle_id = @middle_id, item_name = @item_name, item_memo = @item_memo, item_count = @item_count, item_opened = @item_opened, item_opened_date = @item_opened_date WHERE id = @id;
     `);
     updateItem.run({ ...item, id });
+    console.log(item);
 
     return c.json({ message: 'アイテムデータを更新しました' }, 200);  // ステータスコードと一緒にレスポンス
   } catch (error) {
