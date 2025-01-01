@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { useEffect } from "react"
+//List.cssをインポート
+import "./List.css";
 
 function App() {
   const [items, setitems] = useState([])//tasksというステートを作成し、初期値は空の配列
@@ -74,7 +76,7 @@ function App() {
 
   //itemをソートする関数
   const sortitems = async () => {
-    const response = await fetch("http://localhost:8000/items_sort")
+    const response = await fetch("http://localhost:8000/items/sort")
     const data = await response.json()
     setitems(data)//setTasks関数を使って、dataをtasksにセット
   }
@@ -88,7 +90,6 @@ function App() {
     <>
       <div>
         <h1>LIST</h1>
-        <button onClick={fetchitems}>リストを取得</button>
         <button onClick={sortitems}>ソート</button>
         <ul>
           {items.map((item) => (

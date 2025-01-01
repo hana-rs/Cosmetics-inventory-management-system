@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-//import "./Register.css";
+import "./Register.css";
 
 const CosmeticApp = () => {
   const [categories, setCategories] = useState([]); // カテゴリデータ

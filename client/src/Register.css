@@ -1,79 +1,97 @@
-/* 全体のスタイル */
+/* Register.css */
+
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-  }
-  
-  h1 {
-    text-align: center;
-    color: #555;
-  }
-  
-  /* コンテナスタイル */
-  div {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  label {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  input[type="text"],
-  input[type="number"],
-  input[type="date"],
-  select {
-    width: 100%;
-    max-width: 400px;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  /* ラジオボタンのスタイル */
-  input[type="radio"] {
-    margin-right: 5px;
-  }
-  
-  /* ボタンのスタイル */
-  button {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* レスポンシブ対応 */
-  @media (max-width: 600px) {
-    body {
-      padding: 10px;
-    }
-  
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    select {
-      max-width: 100%;
-    }
-  
-    button {
-      width: 100%;
-    }
-  }
-  
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fff8fb;
+}
+
+h1 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+select, input[type="text"], input[type="number"], input[type="date"] {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+select:focus, input:focus {
+  border-color: #ff6699;
+}
+
+button {
+  background-color: #ff6699;
+  color: white;
+  font-size: 16px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 300px;
+  align-self: center;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #e55485;
+}
+
+button:active {
+  background-color: #cc4675;
+}
+
+input[type="radio"] {
+  margin-right: 5px;
+}
+
+input[type="radio"] + label {
+  margin-right: 20px;
+}
+
+input[type="date"]:disabled {
+  background-color: #f2f2f2;
+  cursor: not-allowed;
+}
+
+header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px;
+  background-color: #fff;
+  border-bottom: 2px solid #ff99bb;
+}
+
+header a {
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  margin-left: 15px;
+}
+
+header a:hover {
+  color: #ff6699;
+}

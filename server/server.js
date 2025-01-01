@@ -295,9 +295,30 @@ app.put("/items/open", async (c) => {
   }
 });
 
+//sort エンドポイント
+//在庫数が少ない順に並び替える
+app.get("/items/sort", async (c) => {
+  try {
+    console.log('アイテムデータを取得しますす。');
+    const items = db.prepare(`
+      SELECT * FROM items;
+    `).all();  // アイテムデータを取得
+    console.log(items);
+    items.sort((a, b) => a.item_count - b.item_count);
+
+    console.log(items);
+
+
+    return c.json(items, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの取得エラー:', error);
+    return c.json({ error: 'アイテムデータの取得中にエラーが発生しました' }, 500);
+  }
+});
+
 app.get("/items/:id", async (c) => {
   try {
-    console.log('アイテムデータを取得します！');
+    console.log('アイテムデータを取得します');
     const id = c.req.param("id");  // リクエストパラメータを取得
     
     const item = db.prepare(`
@@ -332,26 +353,7 @@ app.put("/items/:id", async (c) => {
 }
 );
 
-//sort エンドポイント
-//在庫数が少ない順に並び替える
-app.get("/items_sort", async (c) => {
-  try {
-    console.log('アイテムデータを取得しますす。');
-    const items = db.prepare(`
-      SELECT * FROM items;
-    `).all();  // アイテムデータを取得
-    console.log(items);
-    items.sort((a, b) => a.item_count - b.item_count);
 
-    console.log(items);
-
-
-    return c.json(items, 200);  // ステータスコードと一緒にレスポンス
-  } catch (error) {
-    console.error('アイテムデータの取得エラー:', error);
-    return c.json({ error: 'アイテムデータの取得中にエラーが発生しました' }, 500);
-  }
-});
 
 // サーバー起動
 serve({
