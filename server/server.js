@@ -146,7 +146,7 @@ app.get("/middle_categories", async (c) => {
 // items エンドポイント
 app.get("/items", async (c) => {
   try {
-    console.log('アイテムデータを取得します。');
+    console.log('アイテムデータを取得しますー。');
     const items = db.prepare(`
       SELECT * FROM items;
     `).all();  // アイテムデータを取得
@@ -297,7 +297,7 @@ app.put("/items/open", async (c) => {
 
 app.get("/items/:id", async (c) => {
   try {
-    console.log('アイテムデータを取得します。');
+    console.log('アイテムデータを取得します！');
     const id = c.req.param("id");  // リクエストパラメータを取得
     
     const item = db.prepare(`
@@ -334,12 +334,13 @@ app.put("/items/:id", async (c) => {
 
 //sort エンドポイント
 //在庫数が少ない順に並び替える
-app.get("/items/sort", async (c) => {
+app.get("/items_sort", async (c) => {
   try {
-    console.log('アイテムデータを取得します。');
+    console.log('アイテムデータを取得しますす。');
     const items = db.prepare(`
       SELECT * FROM items;
     `).all();  // アイテムデータを取得
+    console.log(items);
     items.sort((a, b) => a.item_count - b.item_count);
 
     console.log(items);
