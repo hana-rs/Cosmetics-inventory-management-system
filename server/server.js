@@ -297,7 +297,7 @@ app.put("/items/open", async (c) => {
 
 //sort エンドポイント
 //在庫数が少ない順に並び替える
-app.get("/items/sort", async (c) => {
+app.get("/items_sort", async (c) => {
   try {
     console.log('アイテムデータを取得しますす。');
     const items = db.prepare(`

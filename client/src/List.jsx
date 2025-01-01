@@ -76,7 +76,7 @@ function App() {
 
   //itemをソートする関数
   const sortitems = async () => {
-    const response = await fetch("http://localhost:8000/items/sort")
+    const response = await fetch("http://localhost:8000/items_sort")
     const data = await response.json()
     setitems(data)//setTasks関数を使って、dataをtasksにセット
   }
