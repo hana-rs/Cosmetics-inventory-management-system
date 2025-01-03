@@ -1,9 +1,14 @@
+*{
+  font-family: 'Yu Gothic', sans-serif;
+}
+
 header {
     display: flex;
     justify-content: flex-end;
     padding: 24px 20px;
     background-color: #fff;
     border-bottom: 2px solid #ff99bb;
+    
   }
   
   header a {
