@@ -77,21 +77,3 @@ input[type="date"]:disabled {
   cursor: not-allowed;
 }
 
-header {
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px 20px;
-  background-color: #fff;
-  border-bottom: 2px solid #ff99bb;
-}
-
-header a {
-  font-size: 14px;
-  color: #333;
-  text-decoration: none;
-  margin-left: 15px;
-}
-
-header a:hover {
-  color: #ff6699;
-}

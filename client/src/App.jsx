@@ -9,8 +9,8 @@ function App() {
       <header>
         <nav>
           <ul>
-            <Link to="/">Register</Link>
-            <Link to="/list">List</Link>
+            <li><Link to="/">Register</Link></li>
+            <li><Link to="/list">List</Link></li>
           </ul>
         </nav>
       </header>
