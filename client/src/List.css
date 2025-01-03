@@ -37,9 +37,17 @@ body {
     margin: 20px;
   }
   
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   main li {
     background-color: #ffffff;
-    margin-bottom: 10px;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 24px;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -55,7 +63,13 @@ body {
   li span {
     font-weight: bold;
   }
+
+  li .item-name {
+    font-size: 18px;
+    color: #333;
+  }
   
+
   li .item-info {
     margin-bottom: 5px;
   }

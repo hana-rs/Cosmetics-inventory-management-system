@@ -94,18 +94,34 @@ function App() {
         <ul>
           {items.map((item) => (
             <li key={item.id}>
-              {item.item_name} {item.item_memo} 在庫数:{item.item_count}
-              {/* <button onClick={() => add_item_count(item.id)}>在庫を追加</button> */}
+              <div className="item-category">
+              <div className="item-name">{item.item_name}</div> 
+              <div className="item-memo">{item.item_memo}</div> 
+              </div>
+              <div className="item-count">在庫数:{item.item_count}</div>
               {item.item_opened !== 0 && (
-               <> 開封日：{item.item_opened_date} 期限日：{item.item_limited_date} <button onClick={() => dec_item_count(item.id)}>使い切った</button></>
+                <> 
+                <div className="opened_limited">
+                  <div className="item-opened-date">開封日：{item.item_opened_date}</div> 
+                  <div className="item-limited-date">期限日：{item.item_limited_date}</div> 
+                </div>
+                </>
               )}
-              {item.item_opened === 0 && item.item_count!==0 && (
-                <> <button onClick={() => item_open(item.id)}>使用開始</button></>
+             
+              <div className="button-group">
+              {item.item_opened !== 0 && (
+                <> 
+                    <button onClick={() => dec_item_count(item.id)}>使い切った</button>
+                </>
               )}
-              <button onClick={() => handleEdit(item.id)}>編集</button>
-            
+                {item.item_opened === 0 && item.item_count !== 0 && (
+                <> 
+                  <button onClick={() => item_open(item.id)}>使用開始</button>
+                </>
+              )}
+                <button onClick={() => handleEdit(item.id)}>編集</button>
+              </div>
             </li>
-              
           ))}
         </ul>
       </div>
