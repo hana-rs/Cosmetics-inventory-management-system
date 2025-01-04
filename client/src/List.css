@@ -20,7 +20,7 @@ body {
     border-radius: 4px;
     cursor: pointer;
     margin-left: 10px;
-    font-size: 14px;
+    font-size: 16px;
   }
   
   button:hover {
@@ -49,7 +49,7 @@ body {
     height: 100%;
     margin-bottom: 24px;
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 32px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
@@ -58,34 +58,38 @@ body {
   
   li button {
     margin-left: 5px;
+    width: 240px;
   }
   
   li span {
     font-weight: bold;
   }
 
-  li .item-name {
-    font-size: 18px;
-    color: #333;
+  li .item-category {
+    margin: 56px;
   }
-  
 
-  li .item-info {
-    margin-bottom: 5px;
+  li .item-name {
+    font-weight: medium;
+    font-size: 24px;
+    color: #333;
+
   }
-  
-  li .count {
-    font-size: 14px;
-    color: #555;
+
+  li .item-count {
+    margin: 56px;
+    font-size: 24px;
   }
-  
-  li .opened-info {
-    font-size: 12px;
-    color: #777;
+
+  li .opened-limited {
+    margin: 56px;
+    font-size: 24px;
   }
-  
-  li .opened-info span {
-    margin-right: 10px;
+
+  .button-group {
+    margin: 56px;
+    display: flex;
+    align-items: center;
   }
   
   button:disabled {

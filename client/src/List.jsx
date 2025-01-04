@@ -90,20 +90,20 @@ function App() {
     <>
       <div>
         <h1>LIST</h1>
-        <button onClick={sortitems}>ソート</button>
+        {/* <button onClick={sortitems}>ソート</button> */}
         <ul>
           {items.map((item) => (
             <li key={item.id}>
               <div className="item-category">
-              <div className="item-name">{item.item_name}</div> 
-              <div className="item-memo">{item.item_memo}</div> 
+                 <div className="item-name">{item.item_name}</div> 
+                 <div className="item-memo">{item.item_memo}</div> 
               </div>
               <div className="item-count">在庫数:{item.item_count}</div>
               {item.item_opened !== 0 && (
                 <> 
-                <div className="opened_limited">
-                  <div className="item-opened-date">開封日：{item.item_opened_date}</div> 
-                  <div className="item-limited-date">期限日：{item.item_limited_date}</div> 
+                <div className="opened-limited">
+                   <div className="item-opened-date">開封日：{item.item_opened_date}</div> 
+                   <div className="item-limited-date">期限日：{item.item_limited_date}</div> 
                 </div>
                 </>
               )}
