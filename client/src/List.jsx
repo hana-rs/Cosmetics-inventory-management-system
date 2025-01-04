@@ -88,7 +88,7 @@ function App() {
 
   return (
     <>
-      <div>
+      <div className="container">
         <h1>LIST</h1>
         {/* <button onClick={sortitems}>ソート</button> */}
         <ul>

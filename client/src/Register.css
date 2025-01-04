@@ -17,6 +17,7 @@ div {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  
 }
 
 label {
@@ -49,7 +50,6 @@ button {
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  margin-top: 20px;
   width: 100%;
   max-width: 300px;
   align-self: center;
