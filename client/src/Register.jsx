@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Register.css";
 
 const CosmeticApp = () => {
@@ -9,6 +9,8 @@ const CosmeticApp = () => {
   const [selectedMiddleCategory, setSelectedMiddleCategory] = useState(""); // 選択されたアイテム
   const [status, setStatus] = useState('unopened'); // デフォルトは未開封
   const [openDate, setOpenDate] = useState('');
+
+  const navigate = useNavigate();
 
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
@@ -81,7 +83,8 @@ const CosmeticApp = () => {
     if (response.status === 200) {
       alert('登録しました');
       //List.jsxに遷移
-      navigate("/list")
+      
+      navigate('/list');
 
     } else {
       alert('登録に失敗しました');
