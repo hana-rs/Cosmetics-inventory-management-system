@@ -206,6 +206,24 @@ app.post("/items", async (c) => {
   }
 });
 
+app.delete("/items/:id", async (c) => {
+  try {
+    console.log('アイテムデータを削除します。');
+    const id = c.req.param("id");  // リクエストパラメータを取得
+
+    const deleteItem = db.prepare(`
+      DELETE FROM items WHERE id = @id;
+    `);
+    deleteItem.run({ id });
+
+    return c.json({ message: 'アイテムデータを削除しました' }, 200);  // ステータスコードと一緒にレスポンス
+  }
+  catch (error) {
+    console.error('アイテムデータの削除エラー:', error);
+    return c.json({ error: 'アイテムデータの削除中にエラーが発生しました' }, 500);
+  }
+});
+
 // PUTリクエストを受け付けるエンドポイント
 app.put("/items/add", async (c) => {
   try {

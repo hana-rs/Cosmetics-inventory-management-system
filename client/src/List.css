@@ -66,7 +66,7 @@ body {
   }
 
   li .item-category {
-    margin: 56px;
+    margin: 48px;
   }
 
   li .item-name {
@@ -77,17 +77,33 @@ body {
   }
 
   li .item-count {
-    margin: 56px;
     font-size: 24px;
+
   }
 
   li .opened-limited {
-    margin: 56px;
+    
+    font-size: 16px;
+    margin-left: 100px;
+    margin-right: 100px;
+  }
+
+  .item-opened-date {
     font-size: 24px;
   }
 
+  .item-limited-date {
+    font-size: 24px;
+  }
+
+  .zaikosu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+  }
+
   .button-group {
-    margin: 56px;
     display: flex;
     align-items: center;
   }

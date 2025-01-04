@@ -118,6 +118,25 @@ const EditItem = () => {
     }
   };
 
+  const handleDeleteItem = async () => {
+    if (window.confirm("削除してもよろしいですか？")) {
+      try {
+        const response = await fetch(`http://localhost:8000/items/${id}`, {
+          method: "DELETE",
+        });
+
+        if (response.ok) {
+          alert("削除しました");
+          navigate("/list");
+        } else {
+          throw new Error("削除に失敗しました");
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+  }
+
   return (
     <div className="edit-item-container">
       <h2 className="edit-item-title">アイテムを編集</h2>
@@ -223,6 +242,7 @@ const EditItem = () => {
       </div>
 
       <button className="form-button" onClick={handleEditItem}>保存</button>
+      <button className="form-button" onClick={handleDeleteItem}>削除</button>
     </div>
   );
 };

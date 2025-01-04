@@ -98,12 +98,12 @@ function App() {
                  <div className="item-name">{item.item_name}</div> 
                  <div className="item-memo">{item.item_memo}</div> 
               </div>
-              <div className="item-count">在庫数:{item.item_count}</div>
+              <div className="zaikosu">在庫数<div className="item-count">{item.item_count}</div></div>
               {item.item_opened !== 0 && (
                 <> 
                 <div className="opened-limited">
-                   <div className="item-opened-date">開封日：{item.item_opened_date}</div> 
-                   <div className="item-limited-date">期限日：{item.item_limited_date}</div> 
+                <div className="zaikosu">開封日<div className="item-opened-date">{item.item_opened_date}</div> </div>
+                <div className="zaikosu">期限日<div className="item-limited-date">{item.item_limited_date}</div> </div>
                 </div>
                 </>
               )}

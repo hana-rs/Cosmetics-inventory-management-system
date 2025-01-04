@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import "./Register.css";
 
 const CosmeticApp = () => {
@@ -79,6 +80,9 @@ const CosmeticApp = () => {
 
     if (response.status === 200) {
       alert('登録しました');
+      //List.jsxに遷移
+      navigate("/list")
+
     } else {
       alert('登録に失敗しました');
     }
