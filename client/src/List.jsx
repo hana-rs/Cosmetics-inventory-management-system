@@ -93,7 +93,7 @@ function App() {
         {/* <button onClick={sortitems}>ソート</button> */}
         <ul>
           {items.map((item) => (
-            <li key={item.id}>
+            <li key={item.id} onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer' }}>
               <div className="item-category">
                  <div className="item-name">{item.item_name}</div> 
                  <div className="item-memo">{item.item_memo}</div> 
@@ -108,7 +108,7 @@ function App() {
                 </>
               )}
              
-              <div className="button-group">
+              <div className="button-group" onClick={(e) => e.stopPropagation()}>
               {item.item_opened !== 0 && (
                 <> 
                     <button onClick={() => dec_item_count(item.id)}>使い切った</button>
@@ -119,7 +119,6 @@ function App() {
                   <button onClick={() => item_open(item.id)}>使用開始</button>
                 </>
               )}
-                <button onClick={() => handleEdit(item.id)}>編集</button>
               </div>
             </li>
           ))}

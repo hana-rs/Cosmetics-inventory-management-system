@@ -59,6 +59,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    
   }
   
   li button {
@@ -93,6 +94,11 @@ body {
     margin-right: 100px;
   }
 
+  ul :hover {
+    background-color: #f9f9f9;
+    transform: translateY(2px);
+  }
+
   .item-opened-date {
     font-size: 24px;
   }
@@ -106,6 +112,7 @@ body {
     flex-direction: column;
     align-items: center;
     margin: auto;
+    margin: 48px;
   }
 
   .button-group {
