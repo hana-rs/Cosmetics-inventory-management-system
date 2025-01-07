@@ -93,7 +93,7 @@ function App() {
         {/* <button onClick={sortitems}>ソート</button> */}
         <ul>
           {items.map((item) => (
-            <li key={item.id} onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer' }}>
+            <li key={item.id} onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer' }} className="itemlist">
               <div className="item-category">
                  <div className="item-name">{item.item_name}</div> 
                  <div className="item-memo">{item.item_memo}</div> 
