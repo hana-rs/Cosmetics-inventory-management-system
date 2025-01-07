@@ -12,21 +12,6 @@ body {
     padding-top: 20px;
   }
   
-  button {
-    background-color: #007bff;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-    font-size: 16px;
-  }
-
-  
-  button:focus {
-    outline: none;
-  }
   
   .container {
 
@@ -122,4 +107,55 @@ body {
     background-color: #ccc;
     cursor: not-allowed;
   }
+
   
+  @media (max-width: 768px) {
+    .container {
+      width: 80%;
+    }
+
+    main li {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    li .item-category,
+    li .item-name,
+    li .item-count,
+    li .opened-limited,
+    li .item-opened-date,
+    li .item-limited-date {
+      font-size: 18px;
+      margin: 4px 0;
+      align-items: center;
+    }
+
+    li .item-name {
+      font-size: 24px;
+      font-weight:400;
+    }
+
+    .zaikosu {
+      margin: 8px;
+    }
+    
+    .opened-limited {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    li button {
+      width: 100%;
+      height: 48px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button-group {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
