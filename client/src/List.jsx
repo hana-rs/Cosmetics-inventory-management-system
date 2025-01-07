@@ -120,6 +120,20 @@ const handleMiddleCategoryChange = (e) => {
     setitems(data)//setTasks関数を使って、dataをtasksにセット
   }
 
+  //セレクトボックスで選択されたカテゴリのみを絞り込んで表示する関数
+  const filtercategory = async (categoryId) => {
+    const response = await fetch(`http://localhost:8000/category_filter?big_id=${categoryId}`);
+    const data = await response.json();
+    setitems(data); // setTasks関数を使って、dataをtasksにセット
+  };
+
+  //セレクトボックスで選択された中カテゴリのみを絞り込んで表示する関数
+  const filtermiddlecategory = async (itemId) => {
+    const response = await fetch(`http://localhost:8000/middle_category_filter?middle_id=${itemId}`)
+    const data = await response.json()
+    setitems(data)//setTasks関数を使って、dataをtasksにセット
+  }
+
   //Edit.jsxに遷移する関数
   const handleEdit = (itemId) => {
     window.location.href = `http://localhost:5173/edit/${itemId}`
@@ -130,7 +144,8 @@ const handleMiddleCategoryChange = (e) => {
       <div className="container">
         <h1>LIST</h1>
         {/* <button onClick={sortitems}>ソート</button> */}
-        <select value={selectedCategory} onChange={handleCategoryChange}>
+        
+        <select value={selectedCategory} onChange={(e) => { handleCategoryChange(e); filtercategory(e.target.value); }}>
           <option value="">全種類</option>
           {categories.map((category) => (
             <option key={category.big_id} value={category.big_id}>
@@ -138,7 +153,7 @@ const handleMiddleCategoryChange = (e) => {
             </option>
           ))}
         </select>
-        <select value={selectedMiddleCategory} onChange={handleMiddleCategoryChange} disabled={!selectedCategory}>
+        <select value={selectedMiddleCategory} onChange={(e) => { handleMiddleCategoryChange(e); filtermiddlecategory(e.target.value); }} disabled={!selectedCategory}>
           <option value="">全種類</option>
           {middlecategories.map((item) => (
             <option key={item.middle_id} value={item.middle_id}>

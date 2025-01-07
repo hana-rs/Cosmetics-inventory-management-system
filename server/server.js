@@ -371,6 +371,41 @@ app.put("/items/:id", async (c) => {
 }
 );
 
+//category_filter エンドポイント
+//カテゴリが選択されたときのみ表示
+app.get("/category_filter", async (c) => {
+  try {
+    console.log('アイテムデータを取得します！');
+    const bigId = c.req.query("big_id"); // フロントエンドから送信されたbig_idを取得
+    console.log(`big_id: ${bigId}`);
+    const items = db.prepare(`
+      SELECT * FROM items WHERE big_id=@big_id;
+    `).all({ big_id: bigId });  // アイテムデータを取得
+    items.sort((a, b) => a.item_count - b.item_count);
+    return c.json(items, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの取得エラー:', error);
+    return c.json({ error: 'アイテムデータの取得中にエラーが発生しました' }, 500);
+  }
+});
+
+//middle_category_filter エンドポイント
+//中カテゴリが選択されたときのみ表示
+app.get("/middle_category_filter", async (c) => {
+  try {
+    console.log('アイテムデータを取得します。');
+    const middleId = c.req.query("middle_id"); // フロントエンドから送信されたmiddle_idを取得
+    const items = db.prepare(`
+      SELECT * FROM items WHERE middle_id=@middle_id;
+    `).all({ middle_id: middleId });  // アイテムデータを取得
+    items.sort((a, b) => a.item_count - b.item_count);
+    return c.json(items, 200);  // ステータスコードと一緒にレスポンス
+  } catch (error) {
+    console.error('アイテムデータの取得エラー:', error);
+    return c.json({ error: 'アイテムデータの取得中にエラーが発生しました' }, 500);
+  }
+});
+
 
 
 // サーバー起動
