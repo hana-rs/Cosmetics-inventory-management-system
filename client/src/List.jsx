@@ -4,11 +4,17 @@ import { useEffect } from "react"
 import "./List.css";
 
 function App() {
+  const [categories, setCategories] = useState([]);//categoriesというステートを作成し、初期値は空の配列
+  const [middlecategories, setMiddleCategories] = useState([]); // アイテムデータ
+  const [selectedCategory, setSelectedCategory] = useState("");//selectedCategoryというステートを作成し、初期値は空の文字列
+  const [selectedMiddleCategory, setSelectedMiddleCategory] = useState(""); // 選択されたアイテム
+
   const [items, setitems] = useState([])//tasksというステートを作成し、初期値は空の配列
 
    // 初期化処理をuseEffectで実行
    useEffect(() => {
-    fetchitems();  // ページ読み込み時にfetchTasksを呼び出す
+    fetchMakeupCategories();
+    fetchitems();  // ページ読み込み時にfetchTasksを呼び出す」  
   }, []);  // 空の配列を渡すことで、最初のレンダリング時にのみ実行
 
   const fetchitems = async () => {
@@ -16,6 +22,39 @@ function App() {
     const data = await response.json()
     setitems(data)//setTasks関数を使って、dataをtasksにセット
   }
+
+  // カテゴリデータを取得する関数
+  const fetchMakeupCategories = async () => {
+    const response = await fetch("http://localhost:8000/categories")
+    const data = await response.json();
+    setCategories(data)
+    fetchMiddleCategories(data.big_id)
+};
+
+// アイテムデータを取得する関数
+const fetchMiddleCategories = async (categoryId) => {
+  try {
+    const response = await fetch(`http://localhost:8000/middle_categories?big_id=${categoryId}`);
+    const data = await response.json();
+    setMiddleCategories(data);
+    
+  } catch (error) {
+    console.error("アイテムデータの取得中にエラーが発生しました:", error);
+  }
+};
+
+const handleCategoryChange = (e) => {// カテゴリが変更されたときの処理
+  const selected = e.target.value;
+  setSelectedCategory(selected);
+  setSelectedMiddleCategory(""); // アイテムをリセット
+  if (selected) {
+    fetchMiddleCategories(selected); // 選択されたカテゴリに対応するアイテムを取得
+  }
+};
+
+const handleMiddleCategoryChange = (e) => {
+  setSelectedMiddleCategory(e.target.value); // 選択されたアイテムを更新
+};
 
   //item_countを追加する関数
   const add_item_count = async (itemId) => {
@@ -91,6 +130,22 @@ function App() {
       <div className="container">
         <h1>LIST</h1>
         {/* <button onClick={sortitems}>ソート</button> */}
+        <select value={selectedCategory} onChange={handleCategoryChange}>
+          <option value="">全種類</option>
+          {categories.map((category) => (
+            <option key={category.big_id} value={category.big_id}>
+              {category.content}
+            </option>
+          ))}
+        </select>
+        <select value={selectedMiddleCategory} onChange={handleMiddleCategoryChange} disabled={!selectedCategory}>
+          <option value="">全種類</option>
+          {middlecategories.map((item) => (
+            <option key={item.middle_id} value={item.middle_id}>
+              {item.content}
+            </option>
+          ))}
+        </select>
         <ul>
           {items.map((item) => (
             <li key={item.id} onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer' }} className="itemlist">
