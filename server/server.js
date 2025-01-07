@@ -378,9 +378,16 @@ app.get("/category_filter", async (c) => {
     console.log('アイテムデータを取得します！');
     const bigId = c.req.query("big_id"); // フロントエンドから送信されたbig_idを取得
     console.log(`big_id: ${bigId}`);
-    const items = db.prepare(`
-      SELECT * FROM items WHERE big_id=@big_id;
-    `).all({ big_id: bigId });  // アイテムデータを取得
+    let items;
+    if (bigId) {
+      items = db.prepare(`
+        SELECT * FROM items WHERE big_id=@big_id;
+      `).all({ big_id: bigId });  // アイテムデータを取得
+    } else {
+      items = db.prepare(`
+        SELECT * FROM items;
+      `).all();  // 全アイテムデータを取得
+    }
     items.sort((a, b) => a.item_count - b.item_count);
     return c.json(items, 200);  // ステータスコードと一緒にレスポンス
   } catch (error) {
