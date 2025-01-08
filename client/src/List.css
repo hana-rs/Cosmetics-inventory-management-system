@@ -15,7 +15,7 @@ body {
   
   .container {
 
-    width: 70%;
+    width: 80%;
     margin: auto;
     background-color: #f4f4f9;
     padding: 20px;
@@ -29,7 +29,14 @@ body {
   ul {
     list-style-type: none;
     padding: 0;
-    margin: 20px;
+    margin: 0;
+    width: 100%;
+  }
+
+  .itemlist {
+    margin: 0 auto; /* センター揃え */
+    margin-bottom: 20px;
+    width: calc(100% - 32px); /* 親要素の幅に合わせて調整 */
   }
   
   main {
@@ -49,9 +56,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
   }
+
+ 
   
+
+  
+  
+
   li button {
     margin-left: 5px;
     width: 240px;
